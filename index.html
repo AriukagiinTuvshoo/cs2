@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>BLACKOUT PROTOCOL</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%2307080c' width='32' height='32'/%3E%3Cpath d='M6 22 L16 6 L26 22' fill='none' stroke='%23e8a317' stroke-width='2'/%3E%3Ccircle cx='16' cy='18' r='2' fill='%237ddec8'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <canvas id="view"></canvas>
+  <div id="ui">
+    <div id="splash" class="screen">
+      <div class="stamp">LEVEL 4  ·  EYES ONLY</div>
+      <p class="kicker" data-i18n="splashKicker"></p>
+      <h1 data-i18n="splashTitle"></h1>
+      <p class="lede" data-i18n="splashBody"></p>
+      <div class="squad">
+        <img src="/avatars/raven.png" alt="RAVEN" />
+        <img src="/avatars/ghost.png" alt="GHOST" />
+        <img src="/avatars/iron.png" alt="IRON" />
+        <img src="/avatars/hawk.png" alt="HAWK" />
+      </div>
+      <button id="splash-go" class="btn solid" data-i18n="splashCta"></button>
+    </div>
+
+    <div id="menu" class="screen hidden">
+      <header class="topbar">
+        <span class="brand">BLACKOUT <b>PROTOCOL</b></span>
+        <div class="top-actions">
+          <button class="lang" data-lang="mn">МН</button>
+          <button class="lang" data-lang="en">EN</button>
+          <button id="btn-settings" data-i18n="settings"></button>
+        </div>
+      </header>
+      <div class="menu-grid">
+        <div class="hero">
+          <p class="kicker">KESTREL DIVISION  //  PORT VESPER</p>
+          <h1>BLACKOUT<br/>PROTOCOL</h1>
+          <p class="lede" id="menu-lede"></p>
+          <div class="row">
+            <button id="btn-quick" class="btn solid" data-i18n="play"></button>
+            <button id="btn-campaign" class="btn" data-i18n="campaign"></button>
+            <button id="btn-range" class="btn ghost" data-i18n="range"></button>
+          </div>
+          <div class="row slim">
+            <button id="btn-controls" class="texty" data-i18n="controls"></button>
+            <button id="btn-full" class="texty" data-i18n="fullscreen"></button>
+            <a id="open-tab" class="texty" href="./" target="_blank" rel="noopener" data-i18n="openTab"></a>
+          </div>
+        </div>
+        <aside class="dossier frame">
+          <img id="dossier-portrait" class="portrait" src="/avatars/raven.png" alt="" />
+          <p class="kicker" id="dossier-op">RAVEN</p>
+          <div id="career-rank"></div>
+          <div id="career-stats"></div>
+          <div id="career-ops"></div>
+        </aside>
+      </div>
+      <footer class="foot">WASD · MOUSE · LMB · RMB · R · E · SHIFT · CTRL · G · F · 1-3 · TAB · ESC</footer>
+    </div>
+
+    <div id="missions" class="screen hidden">
+      <header class="topbar">
+        <button id="missions-back" class="texty" data-i18n="back"></button>
+        <span class="brand">CAMPAIGN</span>
+        <span></span>
+      </header>
+      <div id="mission-list" class="mission-list"></div>
+    </div>
+
+    <div id="briefing" class="screen hidden">
+      <header class="topbar">
+        <button id="brief-back" class="texty" data-i18n="back"></button>
+        <span class="brand" id="brief-place"></span>
+        <span></span>
+      </header>
+      <div class="brief-grid">
+        <article class="frame brief-copy">
+          <p class="kicker" data-i18n="briefing"></p>
+          <h2 id="brief-name"></h2>
+          <p id="brief-text"></p>
+          <ol id="brief-objs"></ol>
+        </article>
+        <div class="loadout">
+          <p class="kicker" data-i18n="operators"></p>
+          <div id="op-hero" class="op-hero"></div>
+          <div id="op-list" class="op-list"></div>
+          <p class="kicker" data-i18n="primary"></p>
+          <div id="primary-list" class="wep-list"></div>
+          <p class="kicker" data-i18n="secondary"></p>
+          <div id="secondary-list" class="wep-list"></div>
+          <div class="row">
+            <span class="kicker" data-i18n="difficulty"></span>
+            <div id="diff-list" class="seg"></div>
+          </div>
+          <button id="btn-deploy" class="btn solid wide" data-i18n="deploy"></button>
+        </div>
+      </div>
+    </div>
+
+    <div id="hud" class="hidden">
+      <div id="hintbar"></div>
+      <div id="objective">
+        <div class="obj-kicker" data-i18n="objective"></div>
+        <div id="obj-text"></div>
+        <div id="obj-sub"></div>
+      </div>
+      <div id="compass"><div id="compass-strip"></div><i></i></div>
+      <canvas id="minimap" width="168" height="168"></canvas>
+      <div id="killfeed"></div>
+      <div id="crosshair"><span></span><span></span><span></span><span></span><b></b></div>
+      <div id="hitmarker"></div>
+      <div id="dmg"></div>
+      <div id="lowhp"></div>
+      <div id="scope" class="hidden"></div>
+      <div id="radio-line"></div>
+      <div id="toast"></div>
+      <div id="interact-prompt"></div>
+      <div id="holdbar"><em id="hold-label"></em><span><i id="hold-fill"></i></span></div>
+      <div id="status">
+        <img id="op-hud" class="op-hud" src="/avatars/raven.png" alt="" />
+        <div class="stat-num" id="hp-num">100</div>
+        <div class="bars">
+          <div class="bar hp"><i id="hp-fill"></i></div>
+          <div class="bar ap"><i id="ap-fill"></i></div>
+        </div>
+        <div class="stat-side"><span data-i18n="armor"></span> <b id="ap-num">0</b></div>
+      </div>
+      <div id="ammo-box">
+        <div id="mag">30</div>
+        <div id="reserve">90</div>
+        <div id="wname">VX-4</div>
+        <div id="firemode">AUTO</div>
+      </div>
+      <div id="nades"></div>
+      <div id="timer-hud"></div>
+      <div id="reload-indicator"><i></i></div>
+      <div id="death-banner" class="hidden"><b data-i18n="kia"></b><span data-i18n="respawn"></span></div>
+      <div id="lock-hint" class="hidden"></div>
+      <div id="dmg-nums"></div>
+      <div id="offscreen" class="hidden"></div>
+      <div id="fps"></div>
+      <div id="cash-hud"></div>
+    </div>
+
+    <div id="pause" class="screen hidden">
+      <div class="panel frame">
+        <p class="kicker">PAUSED</p>
+        <h2 data-i18n="paused"></h2>
+        <button id="btn-resume" class="btn solid" data-i18n="resume"></button>
+        <button id="btn-pause-settings" class="btn" data-i18n="settings"></button>
+        <button id="btn-abort" class="btn danger" data-i18n="abort"></button>
+      </div>
+    </div>
+
+    <div id="results" class="screen hidden">
+      <div class="panel frame wide">
+        <p class="kicker" id="res-kicker"></p>
+        <h2 id="res-title"></h2>
+        <div id="res-stars"></div>
+        <div id="res-stats" class="stat-grid"></div>
+        <div id="res-badges"></div>
+        <div class="row">
+          <button id="btn-retry" class="btn solid" data-i18n="retry"></button>
+          <button id="btn-next" class="btn" data-i18n="next"></button>
+          <button id="btn-res-menu" class="btn ghost" data-i18n="menu"></button>
+        </div>
+      </div>
+    </div>
+
+    <div id="settings" class="overlay hidden">
+      <div class="panel frame">
+        <h2 data-i18n="settings"></h2>
+        <label><span data-i18n="sensitivity"></span><input id="set-sens" type="range" min="0.4" max="2.2" step="0.01" /></label>
+        <label><span data-i18n="fov"></span><input id="set-fov" type="range" min="66" max="100" step="1" /></label>
+        <label><span data-i18n="volume"></span><input id="set-vol" type="range" min="0" max="1" step="0.01" /></label>
+        <label><span data-i18n="music"></span><input id="set-music" type="range" min="0" max="1" step="0.01" /></label>
+        <label class="check"><input id="set-invert" type="checkbox" /><span data-i18n="invert"></span></label>
+        <label class="check"><input id="set-shake" type="checkbox" /><span data-i18n="shake"></span></label>
+        <label class="check"><input id="set-numbers" type="checkbox" /><span data-i18n="numbers"></span></label>
+        <label class="check"><input id="set-shadows" type="checkbox" /><span data-i18n="shadows"></span></label>
+        <div class="row">
+          <button id="set-quality" class="btn"></button>
+          <button id="set-reset" class="btn danger" data-i18n="reset"></button>
+        </div>
+        <button id="set-close" class="btn solid" data-i18n="close"></button>
+      </div>
+    </div>
+
+    <div id="controls" class="overlay hidden">
+      <div class="panel frame wide">
+        <h2 data-i18n="controls"></h2>
+        <p id="controls-body"></p>
+        <button id="controls-close" class="btn solid" data-i18n="close"></button>
+      </div>
+    </div>
+
+    <div id="buy" class="overlay hidden">
+      <div class="panel frame wide">
+        <p class="kicker" data-i18n="buy"></p>
+        <h2 id="buy-cash"></h2>
+        <p id="buy-timer"></p>
+        <div id="buy-list" class="wep-list"></div>
+        <button id="buy-skip" class="btn solid" data-i18n="skip"></button>
+      </div>
+    </div>
+
+    <div id="loading" class="screen hidden">
+      <img id="load-portrait" class="portrait load-portrait" src="/avatars/raven.png" alt="" />
+      <p class="kicker" data-i18n="loading"></p>
+      <h2>BLACKOUT PROTOCOL</h2>
+      <p id="load-tip"></p>
+      <div class="loadbar"><i></i></div>
+    </div>
+
+    <div id="crash" class="hidden"></div>
+
+    <div id="touch" class="hidden">
+      <div id="stick"></div>
+      <div class="touch-right">
+        <button data-touch="0">FIRE</button>
+        <button data-touch="2">AIM</button>
+        <button data-touch="jump">JUMP</button>
+        <button data-touch="reload">R</button>
+        <button data-touch="use">E</button>
+        <button data-touch="crouch">C</button>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
